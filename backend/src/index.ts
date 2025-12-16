@@ -8,11 +8,21 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import dotenv from "dotenv";
 
+// 載入環境變數（必須在其他導入之前）
+dotenv.config();
+
+// 全域錯誤處理
+process.on("uncaughtException", (error) => {
+  console.error("❌ Uncaught Exception:", error);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ Unhandled Rejection:", reason);
+});
+
+// 延遲導入服務（避免 Prisma 初始化錯誤導致整個應用崩潰）
 import { RoomService, MatchmakingService } from "./services";
 import { SocketHandler } from "./handlers";
-
-// 載入環境變數
-dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:3000";
