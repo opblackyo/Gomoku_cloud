@@ -163,6 +163,15 @@ export interface ServerToClientEvents {
   /** 再來一局結果 */
   "game:rematch_result": (data: { accepted: boolean; newRoom?: Room }) => void;
   
+  /** 玩家數據更新 */
+  "player:stats_update": (data: {
+    rating: number;
+    ratingChange: number;
+    wins: number;
+    losses: number;
+    rank: string;
+  }) => void;
+  
   /** 收到聊天訊息 */
   "chat:message_received": (data: { 
     senderId: string; 
