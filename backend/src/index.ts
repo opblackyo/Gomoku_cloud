@@ -68,8 +68,8 @@ function initServer(): void {
     }
   }, 2000); // 每 2 秒檢查一次匹配
 
-  // 啟動伺服器
-  httpServer.listen(PORT, () => {
+  // 啟動伺服器 - 綁定到 0.0.0.0 以支援雲端平台
+  httpServer.listen(Number(PORT), "0.0.0.0", () => {
     console.log("=".repeat(50));
     console.log(`🎮 五子棋對戰伺服器已啟動`);
     console.log(`📡 WebSocket 端口: ${PORT}`);
