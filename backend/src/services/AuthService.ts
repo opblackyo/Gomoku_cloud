@@ -6,7 +6,7 @@
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import prisma from "../lib/prisma";
+import { prisma } from "../lib/prisma";
 import { Rank, PublicUserInfo } from "../types";
 
 /** JWT 負載類型 */
@@ -52,6 +52,11 @@ export class AuthService {
    */
   async register(username: string, password: string, displayName?: string): Promise<AuthResult> {
     try {
+      // 檢查資料庫連接
+      if (!prisma) {
+        return { success: false, message: "資料庫服務暫時無法使用" };
+      }
+
       // 驗證輸入
       if (!username || username.length < 2 || username.length > 20) {
         return { success: false, message: "帳號必須在 2-20 個字符之間" };
@@ -123,6 +128,11 @@ export class AuthService {
    */
   async login(username: string, password: string): Promise<AuthResult> {
     try {
+      // 檢查資料庫連接
+      if (!prisma) {
+        return { success: false, message: "資料庫服務暫時無法使用" };
+      }
+
       // 驗證輸入
       if (!username || !password) {
         return { success: false, message: "請輸入用戶名和密碼" };
@@ -183,6 +193,11 @@ export class AuthService {
    */
   async verifyToken(token: string): Promise<AuthResult> {
     try {
+      // 檢查資料庫連接
+      if (!prisma) {
+        return { success: false, message: "資料庫服務暫時無法使用" };
+      }
+
       const decoded = jwt.verify(token, this.jwtSecret) as JwtPayload;
 
       // 查找用戶確認仍存在
@@ -226,6 +241,8 @@ export class AuthService {
    */
   async getUserById(userId: string): Promise<PublicUserInfo | null> {
     try {
+      if (!prisma) return null;
+
       const user = await prisma.user.findUnique({
         where: { id: userId },
       });
@@ -252,6 +269,10 @@ export class AuthService {
    */
   async updateDisplayName(userId: string, newDisplayName: string): Promise<AuthResult> {
     try {
+      if (!prisma) {
+        return { success: false, message: "資料庫服務暫時無法使用" };
+      }
+
       if (!newDisplayName || newDisplayName.trim().length < 1 || newDisplayName.trim().length > 20) {
         return { success: false, message: "名稱必須在 1-20 個字符之間" };
       }
@@ -297,6 +318,8 @@ export class AuthService {
     newLosses: number
   ): Promise<boolean> {
     try {
+      if (!prisma) return false;
+
       const user = await prisma.user.findUnique({
         where: { id: userId },
       });

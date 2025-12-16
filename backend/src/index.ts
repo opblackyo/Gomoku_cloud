@@ -42,8 +42,20 @@ function parseCorsOrigin(origin: string): string | string[] | boolean {
  * 初始化伺服器
  */
 function initServer(): void {
-  // 建立 HTTP 伺服器
-  const httpServer = createServer();
+  // 建立 HTTP 伺服器，加入健康檢查端點
+  const httpServer = createServer((req, res) => {
+    if (req.url === "/health" || req.url === "/") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({
+        status: "ok",
+        service: "gomoku-backend",
+        timestamp: new Date().toISOString(),
+      }));
+    } else {
+      res.writeHead(404);
+      res.end("Not Found");
+    }
+  });
 
   // 建立 Socket.IO 伺服器
   const io = new Server(httpServer, {
