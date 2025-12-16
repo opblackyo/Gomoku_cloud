@@ -10,6 +10,21 @@ import { PublicUserInfo } from "./user";
 
 /** 客戶端發送事件 */
 export interface ClientToServerEvents {
+  /** 註冊 */
+  "auth:register": (data: { username: string; password: string; displayName?: string }) => void;
+  
+  /** 登入 */
+  "auth:login": (data: { username: string; password: string }) => void;
+  
+  /** 驗證 Token */
+  "auth:verify": (token: string) => void;
+  
+  /** 登出 */
+  "auth:logout": () => void;
+  
+  /** 更新顯示名稱 */
+  "auth:update_display_name": (newDisplayName: string) => void;
+  
   /** 加入大廳 */
   "lobby:join": (userId: string) => void;
   
@@ -69,6 +84,21 @@ export interface ClientToServerEvents {
 export interface ServerToClientEvents {
   /** 連線成功 */
   "connection:success": (data: { userId: string }) => void;
+  
+  /** 註冊結果 */
+  "auth:register_result": (result: { success: boolean; message: string; user?: PublicUserInfo; token?: string }) => void;
+  
+  /** 登入結果 */
+  "auth:login_result": (result: { success: boolean; message: string; user?: PublicUserInfo; token?: string }) => void;
+  
+  /** Token 驗證結果 */
+  "auth:verify_result": (result: { success: boolean; message: string; user?: PublicUserInfo }) => void;
+  
+  /** 登出結果 */
+  "auth:logout_result": (result: { success: boolean }) => void;
+  
+  /** 更新顯示名稱結果 */
+  "auth:update_display_name_result": (result: { success: boolean; message: string; user?: PublicUserInfo }) => void;
   
   /** 房間列表更新 */
   "lobby:rooms_update": (rooms: RoomListItem[]) => void;
