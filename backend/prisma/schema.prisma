@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+//postgresql
+//prisma-client-js"
+//sqlite
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== 使用者系統 ====================
+
+/// 使用者帳號
+model User {
+  id            String   @id @default(uuid())
+  username      String   @unique  // 帳號（用於登入，不可修改）
+  displayName   String?            // 顯示名稱（可修改，null 時使用 username）
+  email         String?  @unique
+  password      String   // bcrypt 加密後的密碼
+  
+  // 遊戲數據
+  rating        Int      @default(1000)
+  rank          String   @default("bronze") // bronze, silver, gold, platinum, diamond, master, apex
+  wins          Int      @default(0)
+  losses        Int      @default(0)
+  draws         Int      @default(0)
+  
+  // 時間戳記
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastLoginAt   DateTime?
+  
+  // 關聯
+  gamesAsBlack  Game[]   @relation("BlackPlayer")
+  gamesAsWhite  Game[]   @relation("WhitePlayer")
+  gamesWon      Game[]   @relation("Winner")
+
+  @@index([username])
+  @@index([rating])
+}
+
+// ==================== 遊戲記錄 ====================
+
+/// 遊戲對局記錄
+model Game {
+  id            String   @id @default(uuid())
+  
+  // 玩家
+  blackPlayerId String
+  whitePlayerId String
+  winnerId      String?
+  
+  blackPlayer   User     @relation("BlackPlayer", fields: [blackPlayerId], references: [id])
+  whitePlayer   User     @relation("WhitePlayer", fields: [whitePlayerId], references: [id])
+  winner        User?    @relation("Winner", fields: [winnerId], references: [id])
+  
+  // 遊戲結果
+  result        String   // "black_win", "white_win", "draw", "timeout", "forfeit"
+  moves         String   // JSON 格式儲存棋步記錄
+  totalMoves    Int
+  
+  // 積分變化
+  blackRatingBefore Int
+  blackRatingAfter  Int
+  whiteRatingBefore Int
+  whiteRatingAfter  Int
+  
+  // 時間
+  startedAt     DateTime @default(now())
+  endedAt       DateTime?
+  duration      Int?     // 遊戲時長（秒）
+
+  @@index([blackPlayerId])
+  @@index([whitePlayerId])
+  @@index([startedAt])
+}
