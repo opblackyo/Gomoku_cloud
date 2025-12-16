@@ -22,10 +22,20 @@ function parseCorsOrigin(origin: string): string | string[] | boolean {
   if (origin === "*") {
     return true; // 允許所有來源
   }
+  
+  // 確保有 https:// 前綴
+  const addProtocol = (url: string): string => {
+    const trimmed = url.trim();
+    if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+      return `https://${trimmed}`;
+    }
+    return trimmed;
+  };
+  
   if (origin.includes(",")) {
-    return origin.split(",").map(o => o.trim());
+    return origin.split(",").map(o => addProtocol(o));
   }
-  return origin;
+  return addProtocol(origin);
 }
 
 /**
