@@ -17,6 +17,17 @@ dotenv.config();
 const PORT = process.env.PORT || 3001;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:3000";
 
+// 解析 CORS 來源（支援多個來源，用逗號分隔）
+function parseCorsOrigin(origin: string): string | string[] | boolean {
+  if (origin === "*") {
+    return true; // 允許所有來源
+  }
+  if (origin.includes(",")) {
+    return origin.split(",").map(o => o.trim());
+  }
+  return origin;
+}
+
 /**
  * 初始化伺服器
  */
@@ -27,9 +38,9 @@ function initServer(): void {
   // 建立 Socket.IO 伺服器
   const io = new Server(httpServer, {
     cors: {
-      origin: CORS_ORIGIN,
+      origin: parseCorsOrigin(CORS_ORIGIN),
       methods: ["GET", "POST"],
-      credentials: true,
+      credentials: CORS_ORIGIN !== "*", // 使用 * 時不能有 credentials
     },
     // 連線設定
     pingTimeout: 60000,
