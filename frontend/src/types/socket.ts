@@ -130,6 +130,7 @@ export interface ServerToClientEvents {
   /** 遊戲開始 */
   "game:start": (data: { 
     gameId: string;
+    roomId: string;
     yourColor: StoneColor;
     opponent: PublicUserInfo;
     firstMove: StoneColor;
