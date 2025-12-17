@@ -134,16 +134,19 @@ export function GameBoard({
   }, [board, isWinningPosition, isLastMove, isSelected, canPlay, isMyTurn, myColor, handleCellClick]);
 
   return (
-    <div className="relative">
-      {/* 棋盤背景 */}
-      <div
-        className="grid bg-board-light rounded-lg shadow-xl p-4"
-        style={{
-          gridTemplateColumns: `repeat(${BOARD_SIZE}, 1fr)`,
-          gap: 0,
-        }}
-      >
-        {cells}
+    <div className="relative w-full">
+      {/* 棋盤容器 - 自適應寬度 */}
+      <div className="w-full max-w-[min(100vw-2rem,500px)] mx-auto">
+        {/* 棋盤背景 */}
+        <div
+          className="grid bg-board-light rounded-lg shadow-xl p-2 sm:p-4 aspect-square"
+          style={{
+            gridTemplateColumns: `repeat(${BOARD_SIZE}, 1fr)`,
+            gap: 0,
+          }}
+        >
+          {cells}
+        </div>
       </div>
 
       {/* 落子確認按鈕 */}
@@ -224,7 +227,7 @@ function Cell({
   return (
     <div
       className={cn(
-        "relative w-8 h-8 sm:w-10 sm:h-10",
+        "relative aspect-square w-full",
         canClick && "cursor-pointer hover:bg-yellow-200/30",
         isSelected && "bg-yellow-300/50"
       )}
@@ -260,7 +263,7 @@ function Cell({
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div
             className={cn(
-              "w-7 h-7 sm:w-9 sm:h-9 rounded-full shadow-lg transition-all opacity-60 animate-pulse",
+              "w-[85%] h-[85%] rounded-full shadow-lg transition-all opacity-60 animate-pulse",
               previewColor === "black" ? "bg-stone-black" : "bg-stone-white border border-gray-300",
               "ring-2 ring-yellow-400"
             )}
@@ -273,9 +276,9 @@ function Cell({
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div
             className={cn(
-              "w-7 h-7 sm:w-9 sm:h-9 rounded-full shadow-lg transition-all",
+              "w-[85%] h-[85%] rounded-full shadow-lg transition-all",
               stone === "black" ? "bg-stone-black" : "bg-stone-white border border-gray-300",
-              isWinning && "ring-2 ring-yellow-400 ring-offset-2",
+              isWinning && "ring-2 ring-yellow-400 ring-offset-1",
               isLastMove && "ring-2 ring-red-500"
             )}
           />

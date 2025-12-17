@@ -300,15 +300,15 @@ export default function GamePage() {
   };
 
   return (
-    <main className="min-h-screen py-8 px-4">
+    <main className="min-h-screen py-4 sm:py-8 px-2 sm:px-4">
       <div className="max-w-4xl mx-auto">
         {/* 標題 */}
-        <header className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-white">
+        <header className="text-center mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-white">
             ♟️ 五子棋對戰
           </h1>
           {gameId && (
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-xs sm:text-sm text-gray-400 mt-1 break-all px-2">
               遊戲 ID: {gameId}
             </p>
           )}
@@ -325,7 +325,7 @@ export default function GamePage() {
         </div>
 
         {/* 棋盤 */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-4 px-1">
           <GameBoard
             board={board}
             canPlay={isPlaying}
